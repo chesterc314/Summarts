@@ -1,0 +1,60 @@
+@page
+@model SummArts.Pages.Summaries.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Summary</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Summary.Title" class="control-label"></label>
+                <input asp-for="Summary.Title" class="form-control" />
+                <span asp-validation-for="Summary.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary.SummaryText" class="control-label"></label>
+                <input asp-for="Summary.SummaryText" class="form-control" />
+                <span asp-validation-for="Summary.SummaryText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary.SourceUrl" class="control-label"></label>
+                <input asp-for="Summary.SourceUrl" class="form-control" />
+                <span asp-validation-for="Summary.SourceUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary.Category" class="control-label"></label>
+                <select asp-for="Summary.Category" class="form-control"></select>
+                <span asp-validation-for="Summary.Category" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Summary.Id" />
+            <div class="form-group">
+                <label asp-for="Summary.CreatedDate" class="control-label"></label>
+                <input asp-for="Summary.CreatedDate" class="form-control" />
+                <span asp-validation-for="Summary.CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Summary.UpdatedDate" class="control-label"></label>
+                <input asp-for="Summary.UpdatedDate" class="form-control" />
+                <span asp-validation-for="Summary.UpdatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
