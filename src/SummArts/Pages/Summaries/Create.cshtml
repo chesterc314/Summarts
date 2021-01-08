@@ -5,12 +5,11 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Summary</h4>
+<h4>Create Article Summary</h4>
+<p>By Raw Text or Source Url</p>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -19,9 +18,9 @@
                 <span asp-validation-for="Summary.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Summary.SummaryText" class="control-label"></label>
-                <input asp-for="Summary.SummaryText" class="form-control" />
-                <span asp-validation-for="Summary.SummaryText" class="text-danger"></span>
+                <label asp-for="Summary.RawText" class="control-label"></label>
+                <textarea asp-for="Summary.RawText" class="form-control" > </textarea>
+                <span asp-validation-for="Summary.RawText" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Summary.SourceUrl" class="control-label"></label>
@@ -30,18 +29,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Summary.Category" class="control-label"></label>
-                <select asp-for="Summary.Category" class="form-control"></select>
+                <select asp-for="Summary.Category" asp-items="@CreateModel.ListOfCategories" class="form-control"></select>
                 <span asp-validation-for="Summary.Category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Summary.CreatedDate" class="control-label"></label>
-                <input asp-for="Summary.CreatedDate" class="form-control" />
-                <span asp-validation-for="Summary.CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Summary.UpdatedDate" class="control-label"></label>
-                <input asp-for="Summary.UpdatedDate" class="form-control" />
-                <span asp-validation-for="Summary.UpdatedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

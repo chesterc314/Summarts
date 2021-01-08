@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SummArts.Helpers;
 using SummArts.Models;
 using SummArts.Persistence;
 
@@ -13,11 +11,17 @@ namespace SummArts.Pages.Summaries
 {
     public class EditModel : PageModel
     {
-        private readonly SummArts.Persistence.SummArtsContext _context;
+        private readonly SummArtsContext _context;
+        private readonly IDateProvider _dateProvider;
+        private readonly ISummarizer _summarizer;
+        private readonly IArticleProvider _articleProvider;
 
-        public EditModel(SummArts.Persistence.SummArtsContext context)
+        public EditModel(SummArtsContext context, IDateProvider dateProvider, ISummarizer summarizer, IArticleProvider articleProvider)
         {
             _context = context;
+            _dateProvider = dateProvider;
+            _summarizer = summarizer;
+            _articleProvider = articleProvider;
         }
 
         [BindProperty]
@@ -39,15 +43,14 @@ namespace SummArts.Pages.Summaries
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
+   
+            Summary.UpdatedDate = _dateProvider.UtcNow;
             _context.Attach(Summary).State = EntityState.Modified;
 
             try

@@ -1,13 +1,14 @@
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+
 namespace SummArts.Models
 {
     public abstract class Entity<IdType>
     {
         public IdType Id { get; set; }
-        [DataType(DataType.Date)]
+        [DisplayName("Created Date")]
         public DateTime CreatedDate { get; set; }
-        [DataType(DataType.Date)]
+        [DisplayName("Updated Date")]
         public DateTime UpdatedDate { get; set; }
     }
 }

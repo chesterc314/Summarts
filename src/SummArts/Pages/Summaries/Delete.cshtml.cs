@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,9 +9,9 @@ namespace SummArts.Pages.Summaries
 {
     public class DeleteModel : PageModel
     {
-        private readonly SummArts.Persistence.SummArtsContext _context;
+        private readonly SummArtsContext _context;
 
-        public DeleteModel(SummArts.Persistence.SummArtsContext context)
+        public DeleteModel(SummArtsContext context)
         {
             _context = context;
         }

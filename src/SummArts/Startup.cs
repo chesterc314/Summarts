@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SummArts.Helpers;
 using SummArts.Persistence;
 
 namespace SummArts
@@ -21,8 +22,10 @@ namespace SummArts
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddDbContext<SummArtsContext>(options =>
-        options.UseSqlite(Configuration.GetConnectionString("SummArtsContext")));
+            services.AddDbContext<SummArtsContext>(options =>options.UseSqlite(Configuration.GetConnectionString("SummArtsContext")));
+            services.AddScoped<IDateProvider, DateProvider>();
+            services.AddScoped<ISummarizer, Summarizer>();
+            services.AddSingleton<IArticleProvider, ArticleProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

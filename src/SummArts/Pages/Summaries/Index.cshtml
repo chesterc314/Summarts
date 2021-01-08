@@ -5,10 +5,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" class="btn btn-primary">Create New Article Summary</a>
 </p>
 <table class="table">
     <thead>
@@ -31,7 +29,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Summary[0].UpdatedDate)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -44,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.SummaryText)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SourceUrl)
+                <a href="@item.SourceUrl" target="_blank">@item.SourceUrl</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category)
