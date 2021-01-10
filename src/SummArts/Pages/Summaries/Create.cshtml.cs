@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using SummArts.Helpers;
 using SummArts.Models;
 using SummArts.Persistence;
@@ -18,19 +21,73 @@ namespace SummArts.Pages.Summaries
         private readonly ISummarizer _summarizer;
         private readonly IArticleProvider _articleProvider;
         private readonly ISentimentAnalyzer _sentimentAnalyzer;
+        private readonly IHttpClient _httpClient;
 
-        public CreateModel(SummArtsContext context, IDateProvider dateProvider, ISummarizer summarizer, IArticleProvider articleProvider, ISentimentAnalyzer sentimentAnalyzer)
+        private readonly IConfiguration _configuration;
+
+        public CreateModel(SummArtsContext context,
+        IDateProvider dateProvider,
+        ISummarizer summarizer,
+        IArticleProvider articleProvider,
+        ISentimentAnalyzer sentimentAnalyzer,
+        IHttpClient httpClient, 
+        IConfiguration configuration)
         {
             _context = context;
             _dateProvider = dateProvider;
             _summarizer = summarizer;
             _articleProvider = articleProvider;
             _sentimentAnalyzer = sentimentAnalyzer;
+            _httpClient = httpClient;
+            _configuration = configuration;
         }
 
-        public IActionResult OnGet()
+        private void BulkInsertArticlesFromNewsAPI()
         {
-            return Page();
+            var headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Accept", "application/json") };
+            var hostInfoResponse = _httpClient.Get("https://ipinfo.io/", headers);
+            var hostInfoParent = JObject.Parse(hostInfoResponse.Content);
+            var country = hostInfoParent.Value<string>("country").ToLower();
+            var apiKey = _configuration["NewsAPIKey"];
+            var newsApiResponse = _httpClient.Get($"https://newsapi.org/v2/top-headlines?country={country}&apiKey={apiKey}&pageSize=40", headers);
+            var newsApiParent = JObject.Parse(newsApiResponse.Content);
+            var articles = newsApiParent.Value<JArray>("articles");
+
+            foreach (var article in articles)
+            {
+                var articleUrl = article.Value<string>("url");
+                var articleTitle = article.Value<string>("title");
+                Summary = new Summary();
+                Summary.SourceUrl = articleUrl;
+                Summary.Category = Category.News;
+                var summary = _context.Summary.FirstOrDefault(m => m.Title == articleTitle);
+                if (summary == null)
+                {
+                    var errors = AddSummaryAndSentiment();
+                    Summary.Title = articleTitle;
+                    if (!errors.Any())
+                    {
+
+                        Summary.CreatedDate = Summary.UpdatedDate = _dateProvider.UtcNow;
+                        _context.Summary.Add(Summary);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        public IActionResult OnGet(bool isBulk)
+        {
+            if (isBulk)
+            {
+                BulkInsertArticlesFromNewsAPI();
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                return Page();
+            }
+
         }
 
         [BindProperty]
@@ -60,33 +117,14 @@ namespace SummArts.Pages.Summaries
             }
             else
             {
-                if (Summary.SourceUrl != null)
+                var errors = AddSummaryAndSentiment();
+                if (errors.Any())
                 {
-                    var article = _articleProvider.FetchArticle(Summary.SourceUrl);
+                    foreach (var error in errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
 
-                    var title = article.Title;
-                    var fullText = article.FullText;
-                    if (title != null)
-                    {
-                        Summary.Title = title;
-                    }
-                    if (fullText != null)
-                    {
-                        Summary.RawText = fullText;
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Error retrieving article. To manually summarize an article, please enter the Raw Text.");
-                        return Page();
-                    }
-                    var sentimentScore = _sentimentAnalyzer.DetermineScoreSentiment(article.FullText);
-                    var summary = _summarizer.Summarize(article.FullText);
-                    Summary.SummaryText = summary;
-                    Summary.Sentiment = Summary.DetermineSentiment(sentimentScore);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Please enter a Source Url or Raw Text");
                     return Page();
                 }
             }
@@ -97,6 +135,43 @@ namespace SummArts.Pages.Summaries
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+
+        public List<string> AddSummaryAndSentiment()
+        {
+            var errors = new List<string>();
+            if (Summary.SourceUrl != null)
+            {
+                var article = _articleProvider.FetchArticle(Summary.SourceUrl);
+
+                var title = article.Title;
+                var fullText = article.FullText;
+                if (title != null)
+                {
+                    Summary.Title = title;
+                }
+                if (fullText != null)
+                {
+                    Summary.RawText = fullText;
+                }
+                else
+                {
+                    errors.Add("Error retrieving article. This article cannot be added. Please contact tech support");
+                }
+                if (!errors.Any())
+                {
+                    var sentimentScore = _sentimentAnalyzer.DetermineSentimentScore(article.FullText);
+                    var summary = _summarizer.Summarize(article.FullText);
+                    Summary.SummaryText = summary;
+                    Summary.Sentiment = Summary.DetermineSentiment(sentimentScore);
+                }
+            }
+            else
+            {
+                errors.Add("Please enter a Source Url");
+            }
+
+            return errors;
         }
     }
 }

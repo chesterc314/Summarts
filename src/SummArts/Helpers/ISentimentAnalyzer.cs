@@ -4,6 +4,6 @@ namespace SummArts.Helpers
 {
     public interface ISentimentAnalyzer
     {
-        double DetermineScoreSentiment(string text);
+        double DetermineSentimentScore(string text);
     }
 }

@@ -31,15 +31,15 @@
              <td>
                 @if(item.Sentiment == Models.Sentiment.Positive)
                 {
-                    <span class="badge bg-success">@Models.Sentiment.Positive.ToString()</span>
+                    <span class="badge bg-success text-light">@Models.Sentiment.Positive.ToString()</span>
                 }
                 else if(item.Sentiment == Models.Sentiment.Negative)
                 {
-                    <span class="badge bg-danger">@Models.Sentiment.Negative.ToString()</span>
+                    <span class="badge bg-danger text-light">@Models.Sentiment.Negative.ToString()</span>
                 }
                 else
                 {
-                    <span class="badge bg-warning">@Models.Sentiment.Neutral.ToString()</span>
+                    <span class="badge bg-warning text-light">@Models.Sentiment.Neutral.ToString()</span>
                 }
             </td>
             <td>

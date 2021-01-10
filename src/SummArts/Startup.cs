@@ -27,6 +27,7 @@ namespace SummArts
             services.AddScoped<ISummarizer, Summarizer>();
             services.AddScoped<ISentimentAnalyzer, SentimentAnalyzer>();
             services.AddSingleton<IArticleProvider, ArticleProvider>();
+            services.AddSingleton<IHttpClient, HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

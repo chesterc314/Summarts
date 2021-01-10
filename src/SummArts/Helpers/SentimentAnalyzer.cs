@@ -13,7 +13,7 @@ namespace SummArts.Helpers
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             _analyzer = new SentimentIntensityAnalyzer();
         }
-        public double DetermineScoreSentiment(string text)
+        public double DetermineSentimentScore(string text)
         {
             var results = _analyzer.PolarityScores(text);
             return results.Compound;

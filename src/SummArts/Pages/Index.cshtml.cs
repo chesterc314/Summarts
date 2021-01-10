@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace SummArts.Pages
 
         public async Task OnGetAsync()
         {
-            Summary = await _context.Summary.ToListAsync();
+            Summary = await _context.Summary.OrderByDescending(s => s.CreatedDate).ToListAsync();
         }
     }
 }
