@@ -31,6 +31,9 @@ namespace SummArts.Migrations
                     b.Property<string>("RawText")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Sentiment")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("SourceUrl")
                         .HasColumnType("TEXT");
 
@@ -38,7 +41,6 @@ namespace SummArts.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedDate")

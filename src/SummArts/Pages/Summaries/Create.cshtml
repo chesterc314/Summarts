@@ -2,26 +2,16 @@
 @model SummArts.Pages.Summaries.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+   ViewData["Title"] = "Create";
 }
-
+<div class="container">
 <h4>Create Article Summary</h4>
-<p>By Raw Text or Source Url</p>
+<p>by Source Url</p>
 <hr />
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Summary.Title" class="control-label"></label>
-                <input asp-for="Summary.Title" class="form-control" />
-                <span asp-validation-for="Summary.Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Summary.RawText" class="control-label"></label>
-                <textarea asp-for="Summary.RawText" class="form-control" > </textarea>
-                <span asp-validation-for="Summary.RawText" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Summary.SourceUrl" class="control-label"></label>
                 <input asp-for="Summary.SourceUrl" class="form-control" />
@@ -40,7 +30,8 @@
 </div>
 
 <div>
-    <a asp-page="Index">Back to List</a>
+    <a asp-page="./Index">Back to List</a>
+</div>
 </div>
 
 @section Scripts {

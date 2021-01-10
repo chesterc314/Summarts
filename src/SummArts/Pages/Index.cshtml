@@ -1,13 +1,10 @@
 @page
-@model SummArts.Pages.Summaries.IndexModel
+@model SummArts.Pages.IndexModel
 
 @{
-    ViewData["Title"] = "Article Management";
+    ViewData["Title"] = "News Feed";
 }
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New Article Summary</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -21,24 +18,17 @@
                 @Html.DisplayNameFor(model => model.Summary[0].SummaryText)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Summary[0].SourceUrl)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Summary[0].Category)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Summary[0].CreatedDate)
+                @Html.DisplayNameFor(model => model.Summary[0].SourceUrl)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Summary[0].UpdatedDate)
-            </th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model.Summary) {
         <tr>
-            <td>
+             <td>
                 @if(item.Sentiment == Models.Sentiment.Positive)
                 {
                     <span class="badge bg-success">@Models.Sentiment.Positive.ToString()</span>
@@ -58,22 +48,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.SummaryText)
             </td>
-            <td>
-                <a href="@item.SourceUrl" target="_blank">@item.SourceUrl</a>
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedDate)
-            </td>
-            <td>
-                <a asp-page="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="Delete" asp-route-id="@item.Id">Delete</a>
+                <a href="@item.SourceUrl" target="_blank">@item.SourceUrl</a>
             </td>
         </tr>
 }

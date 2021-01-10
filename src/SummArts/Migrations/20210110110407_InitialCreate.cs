@@ -15,11 +15,12 @@ namespace SummArts.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedDate = table.Column<DateTime>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
                     SummaryText = table.Column<string>(nullable: true),
                     RawText = table.Column<string>(nullable: true),
                     SourceUrl = table.Column<string>(nullable: true),
-                    Category = table.Column<int>(nullable: false)
+                    Category = table.Column<int>(nullable: false),
+                    Sentiment = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

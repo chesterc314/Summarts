@@ -17,13 +17,15 @@ namespace SummArts.Pages.Summaries
         private readonly IDateProvider _dateProvider;
         private readonly ISummarizer _summarizer;
         private readonly IArticleProvider _articleProvider;
+        private readonly ISentimentAnalyzer _sentimentAnalyzer;
 
-        public CreateModel(SummArtsContext context, IDateProvider dateProvider, ISummarizer summarizer, IArticleProvider articleProvider)
+        public CreateModel(SummArtsContext context, IDateProvider dateProvider, ISummarizer summarizer, IArticleProvider articleProvider, ISentimentAnalyzer sentimentAnalyzer)
         {
             _context = context;
             _dateProvider = dateProvider;
             _summarizer = summarizer;
             _articleProvider = articleProvider;
+            _sentimentAnalyzer = sentimentAnalyzer;
         }
 
         public IActionResult OnGet()
@@ -77,8 +79,10 @@ namespace SummArts.Pages.Summaries
                         ModelState.AddModelError("", "Error retrieving article. To manually summarize an article, please enter the Raw Text.");
                         return Page();
                     }
+                    var sentimentScore = _sentimentAnalyzer.DetermineScoreSentiment(article.FullText);
                     var summary = _summarizer.Summarize(article.FullText);
                     Summary.SummaryText = summary;
+                    Summary.Sentiment = Summary.DetermineSentiment(sentimentScore);
                 }
                 else
                 {

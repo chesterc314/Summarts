@@ -9,7 +9,7 @@ using SummArts.Persistence;
 namespace SummArts.Migrations
 {
     [DbContext(typeof(SummArtsContext))]
-    [Migration("20210107111536_InitialCreate")]
+    [Migration("20210110110407_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace SummArts.Migrations
                     b.Property<string>("RawText")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Sentiment")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("SourceUrl")
                         .HasColumnType("TEXT");
 
@@ -40,7 +43,6 @@ namespace SummArts.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedDate")

@@ -25,6 +25,7 @@ namespace SummArts
             services.AddDbContext<SummArtsContext>(options =>options.UseSqlite(Configuration.GetConnectionString("SummArtsContext")));
             services.AddScoped<IDateProvider, DateProvider>();
             services.AddScoped<ISummarizer, Summarizer>();
+            services.AddScoped<ISentimentAnalyzer, SentimentAnalyzer>();
             services.AddSingleton<IArticleProvider, ArticleProvider>();
         }
 
