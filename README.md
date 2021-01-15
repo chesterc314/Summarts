@@ -4,7 +4,7 @@
 
 ## RUN
 
-Run `dotnet run` for VS Code 
+`cd src\SummArts` then type in `dotnet run` in VS Code terminal and press enter
 
 OR 
 
