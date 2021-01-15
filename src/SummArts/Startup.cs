@@ -32,7 +32,7 @@ namespace SummArts
             {
                 MappingConfiguration.Global.Define<SummaryMappings>();
                 services.AddSingleton<IDataStaxAstraDbConnection, DataStaxAstraDbConnection>();
-                services.AddScoped<IRepository<Summary, int>, DataStaxAstraRepository<Summary>>();
+                services.AddScoped<IRepository<Summary, int>, DataStaxAstraSummaryRepository>();
             }
             else
             {

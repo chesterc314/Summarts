@@ -22,7 +22,7 @@ namespace SummArts.Pages
 
         public IActionResult OnGet()
         {
-            Summary = _repository.GetAll();
+            Summary = _repository.GetAll().OrderByDescending(s => s.UpdatedDate).ToList();
 
             return Page();
         }

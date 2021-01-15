@@ -16,13 +16,11 @@ namespace SummArts.Persistence
         {
             get
             {
-                using (var cluster = Cluster.Builder()
-                         .WithCloudSecureConnectionBundle(_configuration["BundlePath"])
-                         .WithCredentials(_configuration["Username"], _configuration["Password"])
-                         .Build())
-                {
-                    return cluster.Connect(_configuration["KeySpace"]);
-                }
+                var cluster = Cluster.Builder()
+                          .WithCloudSecureConnectionBundle(_configuration["BundlePath"])
+                          .WithCredentials(_configuration["AstraUsername"], _configuration["AstraPassword"])
+                          .Build();
+                return cluster.Connect(_configuration["KeySpace"]);
             }
         }
     }

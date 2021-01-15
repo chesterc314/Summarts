@@ -17,7 +17,8 @@ namespace Persistence.DataStaxAstraMappings
               .Column(u => u.Sentiment, cm => cm.WithName("sentiment").WithDbType<int>())
               .Column(u => u.Title, cm => cm.WithName("title"))
               .Column(u => u.RawText, cm => cm.WithName("raw_text"))
-              .Column(u => u.SummaryText, cm => cm.WithName("summary_text"));
+              .Column(u => u.SummaryText, cm => cm.WithName("summary_text"))
+              .Column(u => u.SourceUrl, cm => cm.WithName("source_url"));
         }
     }
 }

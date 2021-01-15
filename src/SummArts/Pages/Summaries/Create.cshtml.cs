@@ -48,7 +48,7 @@ namespace SummArts.Pages.Summaries
             var country = hostInfoParent.Value<string>("country").ToLower();
             var apiKey = _configuration["NewsAPIKey"];
             var newsAPIUrl = _configuration["NewsAPIUrl"];
-            var newsApiResponse = _httpClient.Get($"{newsAPIUrl}top-headlines?country={country}&apiKey={apiKey}&pageSize=40", headers);
+            var newsApiResponse = _httpClient.Get($"{newsAPIUrl}top-headlines?country={country}&apiKey={apiKey}&pageSize=10", headers);
             var newsApiParent = JObject.Parse(newsApiResponse.Content);
             var articles = newsApiParent.Value<JArray>("articles");
 
