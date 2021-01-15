@@ -15,7 +15,7 @@ Open `SummArts.csproj` in Visual Studio and click play
 
 ## News Feed (for user)
 
-`https://localhost:5001` - view the new articles
+`https://localhost:5001` - view the news articles
 
 ## News Article Management (for admin)
 
