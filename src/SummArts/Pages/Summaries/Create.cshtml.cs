@@ -45,11 +45,12 @@ namespace SummArts.Pages.Summaries
         private void BulkInsertArticlesFromNewsAPI()
         {
             var headers = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("Accept", "application/json") };
-            var hostInfoResponse = _httpClient.Get("https://ipinfo.io/", headers);
+            var hostInfoResponse = _httpClient.Get(_configuration["LocationAPIUrl"], headers);
             var hostInfoParent = JObject.Parse(hostInfoResponse.Content);
             var country = hostInfoParent.Value<string>("country").ToLower();
             var apiKey = _configuration["NewsAPIKey"];
-            var newsApiResponse = _httpClient.Get($"https://newsapi.org/v2/top-headlines?country={country}&apiKey={apiKey}&pageSize=40", headers);
+            var newsAPIUrl = _configuration["NewsAPIUrl"];
+            var newsApiResponse = _httpClient.Get($"{newsAPIUrl}top-headlines?country={country}&apiKey={apiKey}&pageSize=40", headers);
             var newsApiParent = JObject.Parse(newsApiResponse.Content);
             var articles = newsApiParent.Value<JArray>("articles");
 
