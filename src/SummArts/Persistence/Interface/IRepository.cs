@@ -9,8 +9,8 @@ namespace Persistence.Interface
     {
         T Get(IdType id);
         T Get(Expression<Func<T, bool>> p);
-        IEnumerable<T> GetAll();
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> p);
+        IList<T> GetAll();
+        IList<T> GetAll(Expression<Func<T, bool>> p);
         void Update(T entity);
         T Create(T entity);
         void Remove(IdType id);

@@ -1,32 +1,29 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Persistence.Interface;
 using SummArts.Models;
-using SummArts.Persistence;
 
 namespace SummArts.Pages.Summaries
 {
     public class DeleteModel : PageModel
     {
-        private readonly SummArtsContext _context;
-
-        public DeleteModel(SummArtsContext context)
+        private readonly IRepository<Summary, int> _repository;
+        public DeleteModel(IRepository<Summary, int> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         [BindProperty]
         public Summary Summary { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGet(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Summary = await _context.Summary.FirstOrDefaultAsync(m => m.Id == id);
+            Summary = _repository.Get(id.Value);
 
             if (Summary == null)
             {
@@ -35,19 +32,18 @@ namespace SummArts.Pages.Summaries
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPost(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Summary = await _context.Summary.FindAsync(id);
+            Summary = _repository.Get(id.Value);
 
             if (Summary != null)
             {
-                _context.Summary.Remove(Summary);
-                await _context.SaveChangesAsync();
+                _repository.Remove(id.Value);
             }
 
             return RedirectToPage("./Index");

@@ -1,31 +1,27 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using Persistence.Interface;
 using SummArts.Models;
-using SummArts.Persistence;
 
 namespace SummArts.Pages.Summaries
 {
     public class DetailsModel : PageModel
     {
-        private readonly SummArtsContext _context;
-
-        public DetailsModel(SummArtsContext context)
+        private readonly IRepository<Summary, int> _repository;
+        public DetailsModel(IRepository<Summary, int> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public Summary Summary { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public IActionResult OnGet(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            Summary = await _context.Summary.FirstOrDefaultAsync(m => m.Id == id);
+            Summary = _repository.Get(id.Value);
 
             if (Summary == null)
             {

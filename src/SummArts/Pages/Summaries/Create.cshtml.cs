@@ -1,45 +1,43 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Persistence.Interface;
 using SummArts.Helpers;
 using SummArts.Models;
-using SummArts.Persistence;
 
 namespace SummArts.Pages.Summaries
 {
     public class CreateModel : PageModel
     {
-        private readonly SummArtsContext _context;
         private readonly IDateProvider _dateProvider;
         private readonly ISummarizer _summarizer;
         private readonly IArticleProvider _articleProvider;
         private readonly ISentimentAnalyzer _sentimentAnalyzer;
         private readonly IHttpClient _httpClient;
-
         private readonly IConfiguration _configuration;
+        private readonly IRepository<Summary, int> _repository;
 
-        public CreateModel(SummArtsContext context,
-        IDateProvider dateProvider,
+        public CreateModel(IDateProvider dateProvider,
         ISummarizer summarizer,
         IArticleProvider articleProvider,
         ISentimentAnalyzer sentimentAnalyzer,
-        IHttpClient httpClient, 
-        IConfiguration configuration)
+        IHttpClient httpClient,
+        IConfiguration configuration,
+        IRepository<Summary, int> repository)
         {
-            _context = context;
             _dateProvider = dateProvider;
             _summarizer = summarizer;
             _articleProvider = articleProvider;
             _sentimentAnalyzer = sentimentAnalyzer;
             _httpClient = httpClient;
             _configuration = configuration;
+            _repository = repository;
         }
 
         private void BulkInsertArticlesFromNewsAPI()
@@ -61,7 +59,7 @@ namespace SummArts.Pages.Summaries
                 Summary = new Summary();
                 Summary.SourceUrl = articleUrl;
                 Summary.Category = Category.News;
-                var summary = _context.Summary.FirstOrDefault(m => m.Title == articleTitle);
+                var summary = _repository.Get(m => m.Title == articleTitle);
                 if (summary == null)
                 {
                     var errors = AddSummaryAndSentiment();
@@ -70,8 +68,7 @@ namespace SummArts.Pages.Summaries
                     {
 
                         Summary.CreatedDate = Summary.UpdatedDate = _dateProvider.UtcNow;
-                        _context.Summary.Add(Summary);
-                        _context.SaveChanges();
+                        _repository.Create(Summary);
                     }
                 }
             }
@@ -100,7 +97,7 @@ namespace SummArts.Pages.Summaries
         .Select(c => new SelectListItem(c.ToString(), ((int)c).ToString())).Prepend(new SelectListItem("Select One", ""))
         .ToList();
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -132,8 +129,7 @@ namespace SummArts.Pages.Summaries
 
             Summary.CreatedDate = Summary.UpdatedDate = _dateProvider.UtcNow;
 
-            _context.Summary.Add(Summary);
-            await _context.SaveChangesAsync();
+            _repository.Create(Summary);
 
             return RedirectToPage("./Index");
         }

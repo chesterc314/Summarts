@@ -1,10 +1,15 @@
+using System;
+using Cassandra.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Persistence.DataStaxAstraMappings;
+using Persistence.Interface;
 using SummArts.Helpers;
+using SummArts.Models;
 using SummArts.Persistence;
 
 namespace SummArts
@@ -22,7 +27,19 @@ namespace SummArts
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddDbContext<SummArtsContext>(options =>options.UseSqlite(Configuration.GetConnectionString("SummArtsContext")));
+
+            if (bool.Parse(Configuration["AstraEnabled"]))
+            {
+                MappingConfiguration.Global.Define<SummaryMappings>();
+                services.AddSingleton<IDataStaxAstraDbConnection, DataStaxAstraDbConnection>();
+                services.AddScoped<IRepository<Summary, int>, DataStaxAstraRepository<Summary>>();
+            }
+            else
+            {
+                services.AddDbContext<SummArtsContext>(options => options.UseSqlite(Configuration.GetConnectionString("SummArtsContext")));
+                services.AddScoped<IRepository<Summary, int>, SQLLiteSummaryRepository>();
+            }
+
             services.AddScoped<IDateProvider, DateProvider>();
             services.AddScoped<ISummarizer, Summarizer>();
             services.AddScoped<ISentimentAnalyzer, SentimentAnalyzer>();

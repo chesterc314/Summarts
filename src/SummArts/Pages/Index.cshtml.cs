@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Persistence.Interface;
 using SummArts.Models;
 using SummArts.Persistence;
 
@@ -10,18 +12,19 @@ namespace SummArts.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly SummArtsContext _context;
-
-        public IndexModel(SummArtsContext context)
+       private readonly IRepository<Summary, int> _repository;
+        public IndexModel(IRepository<Summary, int> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        public IList<Summary> Summary { get;set; }
+        public IList<Summary> Summary { get; set; }
 
-        public async Task OnGetAsync()
+        public IActionResult OnGet()
         {
-            Summary = await _context.Summary.OrderByDescending(s => s.CreatedDate).ToListAsync();
+            Summary = _repository.GetAll();
+
+            return Page();
         }
     }
 }
